@@ -378,8 +378,9 @@ extension NCActivity {
 
         var newItems = [DateCompareable]()
         if showComments, let metadata = metadata, let account = NCManageDatabase.shared.getActiveAccount() {
-            let comments = NCManageDatabase.shared.getComments(account: account.account, objectId: metadata.fileId)
-            newItems += comments
+            if let resultsTableComments = NCManageDatabase.shared.getResultsTableComments(account: account.account, objectId: metadata.fileId) {
+                newItems += Array(resultsTableComments.map(tableComments.init))
+            }
         }
 
         let activities = NCManageDatabase.shared.getActivity(

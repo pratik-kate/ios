@@ -77,17 +77,16 @@ extension NCManageDatabase {
         }
     }
 
-    func getComments(account: String, objectId: String) -> [tableComments] {
+    func getResultsTableComments(account: String, objectId: String) -> Results<tableComments>? {
 
         do {
             let realm = try Realm()
             realm.refresh()
-            let results = realm.objects(tableComments.self).filter("account == %@ AND objectId == %@", account, objectId).sorted(byKeyPath: "creationDateTime", ascending: false)
-            return Array(results.map(tableComments.init))
+            return realm.objects(tableComments.self).filter("account == %@ AND objectId == %@", account, objectId).sorted(byKeyPath: "creationDateTime", ascending: false)
         } catch let error as NSError {
             NextcloudKit.shared.nkCommonInstance.writeLog("Could not access database: \(error)")
         }
 
-        return []
+        return nil
     }
 }
