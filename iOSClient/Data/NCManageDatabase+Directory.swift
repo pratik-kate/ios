@@ -222,7 +222,6 @@ extension NCManageDatabase {
         }
     }
 
-    @discardableResult
     func setDirectory(serverUrl: String, colorFolder: String?, account: String) -> tableDirectory? {
 
         var result: tableDirectory?
@@ -237,10 +236,6 @@ extension NCManageDatabase {
             NextcloudKit.shared.nkCommonInstance.writeLog("Could not write to database: \(error)")
         }
 
-        if let result = result {
-            return tableDirectory.init(value: result)
-        } else {
-            return nil
-        }
+        return result
     }
 }
