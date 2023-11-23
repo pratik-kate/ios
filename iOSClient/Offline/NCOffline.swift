@@ -55,7 +55,7 @@ class NCOffline: NCCollectionViewCommon {
         var metadatas: [tableMetadata] = []
 
         if self.serverUrl.isEmpty {
-            if let resultsTableDirectory = NCManageDatabase.shared.getTablesDirectory(predicate: NSPredicate(format: "account == %@ AND offline == true", self.appDelegate.account), sorted: "serverUrl", ascending: true) {
+            if let resultsTableDirectory = NCManageDatabase.shared.getResultsTableDirectory(predicate: NSPredicate(format: "account == %@ AND offline == true", self.appDelegate.account), sorted: "serverUrl", ascending: true) {
                 for tableDirectory: tableDirectory in resultsTableDirectory {
                     ocIds.append(tableDirectory.ocId)
                 }

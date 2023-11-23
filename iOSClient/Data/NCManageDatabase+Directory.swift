@@ -161,7 +161,7 @@ extension NCManageDatabase {
         return nil
     }
 
-    func getTablesDirectory(predicate: NSPredicate, sorted: String, ascending: Bool) -> Results<tableDirectory>? {
+    func getResultsTableDirectory(predicate: NSPredicate, sorted: String, ascending: Bool) -> Results<tableDirectory>? {
 
         do {
             let realm = try Realm()

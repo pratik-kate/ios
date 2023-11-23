@@ -291,7 +291,7 @@ class NCService: NSObject {
     @objc func synchronizeOffline(account: String) {
 
         // Synchronize Directory
-        if let resultsTableDirectory = NCManageDatabase.shared.getTablesDirectory(predicate: NSPredicate(format: "account == %@ AND offline == true", account), sorted: "serverUrl", ascending: true) {
+        if let resultsTableDirectory = NCManageDatabase.shared.getResultsTableDirectory(predicate: NSPredicate(format: "account == %@ AND offline == true", account), sorted: "serverUrl", ascending: true) {
             for tableDirectory: tableDirectory in resultsTableDirectory {
                 NCNetworking.shared.synchronizationServerUrl(tableDirectory.serverUrl, account: account, selector: NCGlobal.shared.selectorSynchronizationOffline)
             }

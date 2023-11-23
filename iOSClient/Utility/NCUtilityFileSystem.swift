@@ -533,7 +533,7 @@ class NCUtilityFileSystem: NSObject {
         let url = URL(fileURLWithPath: directory)
         var offlineDir: [String] = []
 
-        if let resultsTableDirectory = NCManageDatabase.shared.getTablesDirectory(predicate: NSPredicate(format: "offline == true"), sorted: "serverUrl", ascending: true) {
+        if let resultsTableDirectory = NCManageDatabase.shared.getResultsTableDirectory(predicate: NSPredicate(format: "offline == true"), sorted: "serverUrl", ascending: true) {
             for tableDirectory: tableDirectory in resultsTableDirectory {
                 offlineDir.append(getDirectoryProviderStorageOcId(tableDirectory.ocId))
             }
