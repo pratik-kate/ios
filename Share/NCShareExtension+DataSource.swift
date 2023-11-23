@@ -136,10 +136,10 @@ extension NCShareExtension: UICollectionViewDataSource {
         cell.labelInfo.text = utility.dateDiff(metadata.date as Date)
 
         let lockServerUrl = utilityFileSystem.stringAppendServerUrl(metadata.serverUrl, addFileName: metadata.fileName)
-        let tableDirectory = NCManageDatabase.shared.getTableDirectory(predicate: NSPredicate(format: "account == %@ AND serverUrl == %@", activeAccount.account, lockServerUrl))
+        let offline = NCManageDatabase.shared.getResultsTableDirectory(predicate: NSPredicate(format: "account == %@ AND serverUrl == %@", activeAccount.account, lockServerUrl))?.first?.offline ?? false
 
         // Local image: offline
-        if tableDirectory != nil && tableDirectory!.offline {
+        if offline {
             cell.imageLocal.image = NCImageCache.images.offlineFlag
         }
     }

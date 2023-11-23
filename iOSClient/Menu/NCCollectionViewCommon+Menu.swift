@@ -40,9 +40,9 @@ extension NCCollectionViewCommon {
         let serverUrl = metadata.serverUrl + "/" + metadata.fileName
         var isOffline: Bool = false
 
-        if metadata.directory, let directory = NCManageDatabase.shared.getTableDirectory(predicate: NSPredicate(format: "account == %@ AND serverUrl == %@", appDelegate.account, serverUrl)) {
+        if metadata.directory, let directory = NCManageDatabase.shared.getResultsTableDirectory(predicate: NSPredicate(format: "account == %@ AND serverUrl == %@", appDelegate.account, serverUrl))?.first {
             isOffline = directory.offline
-        } else if let localFile = NCManageDatabase.shared.getTableLocalFile(predicate: NSPredicate(format: "ocId == %@", metadata.ocId)) {
+        } else if let localFile = NCManageDatabase.shared.getResultsTableLocalFile(predicate: NSPredicate(format: "ocId == %@", metadata.ocId))?.first {
             isOffline = localFile.offline
         }
 

@@ -58,7 +58,7 @@ class NCNetworkingE2EEUpload: NSObject {
         metadata.session = NextcloudKit.shared.nkCommonInstance.sessionIdentifierUpload
         metadata.sessionError = ""
         guard let result = NCManageDatabase.shared.addMetadata(metadata),
-              let directory = NCManageDatabase.shared.getTableDirectory(predicate: NSPredicate(format: "account == %@ AND serverUrl == %@", metadata.account, metadata.serverUrl)) else {
+              let ocIdServerUrl = NCManageDatabase.shared.getResultsTableDirectory(predicate: NSPredicate(format: "account == %@ AND serverUrl == %@", metadata.account, metadata.serverUrl))?.first?.ocId else {
             return NKError(errorCode: NCGlobal.shared.errorUnexpectedResponseFromDB, errorDescription: NSLocalizedString("_e2e_error_", comment: ""))
         }
         metadata = result
@@ -89,7 +89,7 @@ class NCNetworkingE2EEUpload: NSObject {
             // CREATE E2E METADATA
             //
             NCManageDatabase.shared.deleteE2eEncryption(predicate: NSPredicate(format: "account == %@ AND serverUrl == %@ AND fileName == %@", metadata.account, metadata.serverUrl, metadata.fileNameView))
-            let object = tableE2eEncryption.init(account: metadata.account, ocIdServerUrl: directory.ocId, fileNameIdentifier: metadata.fileName)
+            let object = tableE2eEncryption.init(account: metadata.account, ocIdServerUrl: ocIdServerUrl, fileNameIdentifier: metadata.fileName)
             if let results = NCManageDatabase.shared.getE2eEncryption(predicate: NSPredicate(format: "account == %@ AND serverUrl == %@", metadata.account, metadata.serverUrl)) {
                 object.metadataKey = results.metadataKey
                 object.metadataKeyIndex = results.metadataKeyIndex
@@ -112,7 +112,7 @@ class NCNetworkingE2EEUpload: NSObject {
             //
             let uploadMetadataError = await networkingE2EE.uploadMetadata(account: metadata.account,
                                                                                    serverUrl: metadata.serverUrl,
-                                                                                   ocIdServerUrl: directory.ocId,
+                                                                                   ocIdServerUrl: ocIdServerUrl,
                                                                                    fileId: fileId,
                                                                                    userId: metadata.userId,
                                                                                    e2eToken: e2eToken,

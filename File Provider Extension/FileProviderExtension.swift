@@ -205,8 +205,9 @@ class FileProviderExtension: NSFileProviderExtension, NCNetworkingDelegate {
             return completionHandler(NSFileProviderError(.noSuchItem))
         }
 
-        let tableLocalFile = NCManageDatabase.shared.getTableLocalFile(predicate: NSPredicate(format: "ocId == %@", metadata.ocId))
-        if tableLocalFile != nil && utilityFileSystem.fileProviderStorageExists(metadata) && tableLocalFile?.etag == metadata.etag {
+        if let tableLocalFile = NCManageDatabase.shared.getResultsTableLocalFile(predicate: NSPredicate(format: "ocId == %@", metadata.ocId))?.first,
+           utilityFileSystem.fileProviderStorageExists(metadata),
+           tableLocalFile.etag == metadata.etag {
             return completionHandler(nil)
         }
 
@@ -325,7 +326,7 @@ class FileProviderExtension: NSFileProviderExtension, NCNetworkingDelegate {
                 var size = 0 as Int64
                 var error: NSError?
 
-                guard let tableDirectory = self.fpUtility.getTableDirectoryFromParentItemIdentifier(parentItemIdentifier, account: fileProviderData.shared.account, homeServerUrl: fileProviderData.shared.homeServerUrl) else {
+                guard let serverUrl = self.fpUtility.getTableDirectoryFromParentItemIdentifier(parentItemIdentifier, account: fileProviderData.shared.account, homeServerUrl: fileProviderData.shared.homeServerUrl)?.serverUrl else {
                     completionHandler(nil, NSFileProviderError(.noSuchItem))
                     return
                 }
@@ -346,7 +347,7 @@ class FileProviderExtension: NSFileProviderExtension, NCNetworkingDelegate {
                     return
                 }
 
-                let fileName = self.utilityFileSystem.createFileName(fileURL.lastPathComponent, serverUrl: tableDirectory.serverUrl, account: fileProviderData.shared.account)
+                let fileName = self.utilityFileSystem.createFileName(fileURL.lastPathComponent, serverUrl: serverUrl, account: fileProviderData.shared.account)
                 let ocIdTemp = NSUUID().uuidString.lowercased()
 
                 NSFileCoordinator().coordinate(readingItemAt: fileURL, options: .withoutChanges, error: &error) { url in
@@ -355,14 +356,14 @@ class FileProviderExtension: NSFileProviderExtension, NCNetworkingDelegate {
 
                 fileURL.stopAccessingSecurityScopedResource()
 
-                let metadata = NCManageDatabase.shared.createMetadata(account: fileProviderData.shared.account, user: fileProviderData.shared.user, userId: fileProviderData.shared.userId, fileName: fileName, fileNameView: fileName, ocId: ocIdTemp, serverUrl: tableDirectory.serverUrl, urlBase: fileProviderData.shared.accountUrlBase, url: "", contentType: "")
+                let metadata = NCManageDatabase.shared.createMetadata(account: fileProviderData.shared.account, user: fileProviderData.shared.user, userId: fileProviderData.shared.userId, fileName: fileName, fileNameView: fileName, ocId: ocIdTemp, serverUrl: serverUrl, urlBase: fileProviderData.shared.accountUrlBase, url: "", contentType: "")
                 metadata.session = NCNetworking.shared.sessionIdentifierBackgroundExtension
                 metadata.size = size
                 metadata.status = NCGlobal.shared.metadataStatusUploading
 
                 NCManageDatabase.shared.addMetadata(metadata)
 
-                let serverUrlFileName = tableDirectory.serverUrl + "/" + fileName
+                let serverUrlFileName = serverUrl + "/" + fileName
                 let fileNameLocalPath = self.utilityFileSystem.getDirectoryProviderStorageOcId(ocIdTemp, fileNameView: fileName)
 
                 if let task = NKBackground(nkCommonInstance: NextcloudKit.shared.nkCommonInstance).upload(serverUrlFileName: serverUrlFileName, fileNameLocalPath: fileNameLocalPath, dateCreationFile: nil, dateModificationFile: nil, description: ocIdTemp, session: NCNetworking.shared.sessionManagerBackgroundExtension) {

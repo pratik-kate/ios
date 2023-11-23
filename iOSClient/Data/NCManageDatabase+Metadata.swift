@@ -1122,10 +1122,10 @@ extension NCManageDatabase {
             isShare = metadata.permissions.contains(NCGlobal.shared.permissionShared) && !metadataFolder!.permissions.contains(NCGlobal.shared.permissionShared)
             isMounted = metadata.permissions.contains(NCGlobal.shared.permissionMounted) && !metadataFolder!.permissions.contains(NCGlobal.shared.permissionMounted)
 
-        } else if let directory = NCManageDatabase.shared.getTableDirectory(predicate: NSPredicate(format: "account == %@ AND serverUrl == %@", metadata.account, metadata.serverUrl)) {
+        } else if let tableDirectory = NCManageDatabase.shared.getResultsTableDirectory(predicate: NSPredicate(format: "account == %@ AND serverUrl == %@", metadata.account, metadata.serverUrl))?.first {
 
-            isShare = metadata.permissions.contains(NCGlobal.shared.permissionShared) && !directory.permissions.contains(NCGlobal.shared.permissionShared)
-            isMounted = metadata.permissions.contains(NCGlobal.shared.permissionMounted) && !directory.permissions.contains(NCGlobal.shared.permissionMounted)
+            isShare = metadata.permissions.contains(NCGlobal.shared.permissionShared) && !tableDirectory.permissions.contains(NCGlobal.shared.permissionShared)
+            isMounted = metadata.permissions.contains(NCGlobal.shared.permissionMounted) && !tableDirectory.permissions.contains(NCGlobal.shared.permissionMounted)
         }
 
         if isShare || isMounted {

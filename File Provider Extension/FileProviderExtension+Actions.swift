@@ -29,13 +29,13 @@ extension FileProviderExtension {
 
     override func createDirectory(withName directoryName: String, inParentItemIdentifier parentItemIdentifier: NSFileProviderItemIdentifier, completionHandler: @escaping (NSFileProviderItem?, Error?) -> Void) {
 
-        guard let tableDirectory = fpUtility.getTableDirectoryFromParentItemIdentifier(parentItemIdentifier, account: fileProviderData.shared.account, homeServerUrl: fileProviderData.shared.homeServerUrl) else {
+        guard let serverUrl = fpUtility.getTableDirectoryFromParentItemIdentifier(parentItemIdentifier, account: fileProviderData.shared.account, homeServerUrl: fileProviderData.shared.homeServerUrl)?.serverUrl else {
             completionHandler(nil, NSFileProviderError(.noSuchItem))
             return
         }
 
-        let directoryName = utilityFileSystem.createFileName(directoryName, serverUrl: tableDirectory.serverUrl, account: fileProviderData.shared.account)
-        let serverUrlFileName = tableDirectory.serverUrl + "/" + directoryName
+        let directoryName = utilityFileSystem.createFileName(directoryName, serverUrl: serverUrl, account: fileProviderData.shared.account)
+        let serverUrlFileName = serverUrl + "/" + directoryName
 
         NextcloudKit.shared.createFolder(serverUrlFileName: serverUrlFileName) { _, ocId, _, error in
 
@@ -131,11 +131,10 @@ extension FileProviderExtension {
         let serverUrlFrom = metadataFrom.serverUrl
         let fileNameFrom = serverUrlFrom + "/" + itemFrom.filename
 
-        guard let tableDirectoryTo = fpUtility.getTableDirectoryFromParentItemIdentifier(parentItemIdentifier, account: fileProviderData.shared.account, homeServerUrl: fileProviderData.shared.homeServerUrl) else {
+        guard let serverUrlTo = fpUtility.getTableDirectoryFromParentItemIdentifier(parentItemIdentifier, account: fileProviderData.shared.account, homeServerUrl: fileProviderData.shared.homeServerUrl)?.serverUrl else {
             completionHandler(nil, NSFileProviderError(.noSuchItem))
             return
         }
-        let serverUrlTo = tableDirectoryTo.serverUrl
         let fileNameTo = serverUrlTo + "/" + itemFrom.filename
 
         NextcloudKit.shared.moveFileOrFolder(serverUrlFileNameSource: fileNameFrom, serverUrlFileNameDestination: fileNameTo, overwrite: false) { account, error in
@@ -170,7 +169,7 @@ extension FileProviderExtension {
             return
         }
 
-        guard let directoryTable = NCManageDatabase.shared.getTableDirectory(predicate: NSPredicate(format: "account == %@ AND serverUrl == %@", metadata.account, metadata.serverUrl)) else {
+        guard let encrypted = NCManageDatabase.shared.getResultsTableDirectory(predicate: NSPredicate(format: "account == %@ AND serverUrl == %@", metadata.account, metadata.serverUrl))?.first?.e2eEncrypted else {
             completionHandler(nil, NSFileProviderError(.noSuchItem))
             return
         }
@@ -194,7 +193,7 @@ extension FileProviderExtension {
 
                 if metadata.directory {
 
-                    NCManageDatabase.shared.setDirectory(serverUrl: fileNamePathFrom, serverUrlTo: fileNamePathTo, etag: nil, ocId: nil, fileId: nil, encrypted: directoryTable.e2eEncrypted, richWorkspace: nil, account: account)
+                    NCManageDatabase.shared.setDirectory(serverUrl: fileNamePathFrom, serverUrlTo: fileNamePathTo, etag: nil, ocId: nil, fileId: nil, encrypted: encrypted, richWorkspace: nil, account: account)
 
                 } else {
 

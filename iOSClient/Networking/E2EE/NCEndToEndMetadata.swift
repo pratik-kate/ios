@@ -34,14 +34,14 @@ class NCEndToEndMetadata: NSObject {
 
     func encodeMetadata(account: String, serverUrl: String, userId: String, addUserId: String? = nil, addCertificate: String? = nil, removeUserId: String? = nil) -> (metadata: String?, signature: String?, counter: Int, error: NKError) {
 
-        guard let directory = NCManageDatabase.shared.getTableDirectory(predicate: NSPredicate(format: "account == %@ AND serverUrl == %@", account, serverUrl)) else {
+        guard let ocIdServerUrl = NCManageDatabase.shared.getResultsTableDirectory(predicate: NSPredicate(format: "account == %@ AND serverUrl == %@", account, serverUrl))?.first?.ocId else {
             return (nil, nil, 0, NKError(errorCode: NCGlobal.shared.errorUnexpectedResponseFromDB, errorDescription: "_e2e_error_"))
         }
 
         if NCGlobal.shared.capabilityE2EEApiVersion == NCGlobal.shared.e2eeVersionV12 && NCGlobal.shared.e2eeVersions.contains(NCGlobal.shared.e2eeVersionV12) {
-            return encodeMetadataV12(account: account, serverUrl: serverUrl, ocIdServerUrl: directory.ocId)
+            return encodeMetadataV12(account: account, serverUrl: serverUrl, ocIdServerUrl: ocIdServerUrl)
         } else if NCGlobal.shared.capabilityE2EEApiVersion == NCGlobal.shared.e2eeVersionV20 && NCGlobal.shared.e2eeVersions.contains(NCGlobal.shared.e2eeVersionV20) {
-            return encodeMetadataV20(account: account, serverUrl: serverUrl, ocIdServerUrl: directory.ocId, userId: userId, addUserId: addUserId, addCertificate: addCertificate, removeUserId: removeUserId)
+            return encodeMetadataV20(account: account, serverUrl: serverUrl, ocIdServerUrl: ocIdServerUrl, userId: userId, addUserId: addUserId, addCertificate: addCertificate, removeUserId: removeUserId)
         } else {
             return (nil, nil, 0, NKError(errorCode: NCGlobal.shared.errorE2EEVersion, errorDescription: "Server E2EE version " + NCGlobal.shared.capabilityE2EEApiVersion + ", not compatible"))
         }
@@ -53,18 +53,19 @@ class NCEndToEndMetadata: NSObject {
 
     func decodeMetadata(_ metadata: String, signature: String?, serverUrl: String, account: String, urlBase: String, userId: String) -> NKError {
 
-        guard let data = metadata.data(using: .utf8), let directory = NCManageDatabase.shared.getTableDirectory(predicate: NSPredicate(format: "account == %@ AND serverUrl == %@", account, serverUrl)) else {
+        guard let data = metadata.data(using: .utf8),
+              let ocIdServerUrl = NCManageDatabase.shared.getResultsTableDirectory(predicate: NSPredicate(format: "account == %@ AND serverUrl == %@", account, serverUrl))?.first?.ocId else {
             return (NKError(errorCode: NCGlobal.shared.errorE2EEJSon, errorDescription: "_e2e_error_"))
         }
 
         data.printJson()
 
         if (try? JSONDecoder().decode(E2eeV1.self, from: data)) != nil && NCGlobal.shared.e2eeVersions.contains(NCGlobal.shared.e2eeVersionV11) {
-            return decodeMetadataV1(metadata, serverUrl: serverUrl, account: account, ocIdServerUrl: directory.ocId, urlBase: urlBase, userId: userId)
+            return decodeMetadataV1(metadata, serverUrl: serverUrl, account: account, ocIdServerUrl: ocIdServerUrl, urlBase: urlBase, userId: userId)
         } else if (try? JSONDecoder().decode(E2eeV12.self, from: data)) != nil && NCGlobal.shared.e2eeVersions.contains(NCGlobal.shared.e2eeVersionV12) {
-            return decodeMetadataV12(metadata, serverUrl: serverUrl, account: account, ocIdServerUrl: directory.ocId, urlBase: urlBase, userId: userId)
+            return decodeMetadataV12(metadata, serverUrl: serverUrl, account: account, ocIdServerUrl: ocIdServerUrl, urlBase: urlBase, userId: userId)
         } else if (try? JSONDecoder().decode(E2eeV20.self, from: data)) != nil && NCGlobal.shared.e2eeVersions.contains(NCGlobal.shared.e2eeVersionV20) {
-            return decodeMetadataV20(metadata, signature: signature, serverUrl: serverUrl, account: account, ocIdServerUrl: directory.ocId, urlBase: urlBase, userId: userId)
+            return decodeMetadataV20(metadata, signature: signature, serverUrl: serverUrl, account: account, ocIdServerUrl: ocIdServerUrl, urlBase: urlBase, userId: userId)
         } else {
             return NKError(errorCode: NCGlobal.shared.errorE2EEVersion, errorDescription: "Server E2EE version " + NCGlobal.shared.capabilityE2EEApiVersion + ", not compatible")
         }

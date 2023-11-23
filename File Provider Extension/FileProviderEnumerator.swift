@@ -39,12 +39,9 @@ class FileProviderEnumerator: NSObject, NSFileProviderEnumerator {
         if enumeratedItemIdentifier == .rootContainer {
             serverUrl = fileProviderData.shared.homeServerUrl
         } else {
-
-            let metadata = fpUtility.getTableMetadataFromItemIdentifier(enumeratedItemIdentifier)
-            if metadata != nil {
-                if let directorySource = NCManageDatabase.shared.getTableDirectory(predicate: NSPredicate(format: "account == %@ AND serverUrl == %@", metadata!.account, metadata!.serverUrl)) {
-                    serverUrl = directorySource.serverUrl + "/" + metadata!.fileName
-                }
+            if let metadata = fpUtility.getTableMetadataFromItemIdentifier(enumeratedItemIdentifier),
+               let serverUrl = NCManageDatabase.shared.getResultsTableDirectory(predicate: NSPredicate(format: "account == %@ AND serverUrl == %@", metadata.account, metadata.serverUrl))?.first?.serverUrl {
+                self.serverUrl = serverUrl + "/" + metadata.fileName
             }
         }
 
@@ -198,11 +195,7 @@ class FileProviderEnumerator: NSObject, NSFileProviderEnumerator {
 
     func readFileOrFolder(serverUrl: String, completionHandler: @escaping (_ metadatas: [tableMetadata]?) -> Void) {
 
-        var directoryEtag: String?
-
-        if let tableDirectory = NCManageDatabase.shared.getTableDirectory(predicate: NSPredicate(format: "account == %@ AND serverUrl == %@", fileProviderData.shared.account, serverUrl)) {
-            directoryEtag = tableDirectory.etag
-        }
+        var directoryEtag = NCManageDatabase.shared.getResultsTableDirectory(predicate: NSPredicate(format: "account == %@ AND serverUrl == %@", fileProviderData.shared.account, serverUrl))?.first?.etag
 
         NextcloudKit.shared.readFileOrFolder(serverUrlFileName: serverUrl, depth: "0", showHiddenFiles: NCKeychain().showHiddenFiles) { account, files, _, error in
 

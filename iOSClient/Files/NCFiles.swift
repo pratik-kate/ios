@@ -103,22 +103,22 @@ class NCFiles: NCCollectionViewCommon {
 
     override func queryDB(isForced: Bool) {
 
+        guard let tableDirectory = NCManageDatabase.shared.getResultsTableDirectory(predicate: NSPredicate(format: "account == %@ AND serverUrl == %@", self.appDelegate.account, self.serverUrl))?.first else { return }
         let metadatas = NCManageDatabase.shared.getMetadatas(predicate: NSPredicate(format: "account == %@ AND serverUrl == %@", self.appDelegate.account, self.serverUrl))
-        let directory = NCManageDatabase.shared.getTableDirectory(predicate: NSPredicate(format: "account == %@ AND serverUrl == %@", self.appDelegate.account, self.serverUrl))
         let metadataTransfer = NCManageDatabase.shared.getMetadata(predicate: NSPredicate(format: "status != %i AND serverUrl == %@", NCGlobal.shared.metadataStatusNormal, self.serverUrl))
         if self.metadataFolder == nil {
             self.metadataFolder = NCManageDatabase.shared.getMetadataFolder(account: self.appDelegate.account, urlBase: self.appDelegate.urlBase, userId: self.appDelegate.userId, serverUrl: self.serverUrl)
         }
 
-        if !isForced, let directory, directory.etag == self.dataSource.directory?.etag, metadataTransfer == nil, self.fileNameBlink == nil, self.fileNameOpen == nil {
+        if !isForced, tableDirectory.etag == self.dataSource.etagDirectory, metadataTransfer == nil, self.fileNameBlink == nil, self.fileNameOpen == nil {
             return
         }
 
-        self.richWorkspaceText = directory?.richWorkspace
+        self.richWorkspaceText = tableDirectory.richWorkspace
         self.dataSource = NCDataSource(
             metadatas: metadatas,
             account: self.appDelegate.account,
-            directory: directory,
+            etagDirectory: tableDirectory.etag,
             sort: self.layoutForView?.sort,
             ascending: self.layoutForView?.ascending,
             directoryOnTop: self.layoutForView?.directoryOnTop,

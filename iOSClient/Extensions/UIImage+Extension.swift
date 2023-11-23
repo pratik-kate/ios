@@ -227,7 +227,9 @@ extension UIImage {
             if let hex = tableDirectory.colorFolder, let color = UIColor(hex: hex) {
                 image = self.withTintColor(color, renderingMode: .alwaysOriginal)
             }
-        } else if let tableDirectory = NCManageDatabase.shared.getTableDirectory(predicate: NSPredicate(format: "account == %@ AND serverUrl == %@", metadata.account, serverUrl)), let hex = tableDirectory.colorFolder, let color = UIColor(hex: hex) {
+        } else if let tableDirectory = NCManageDatabase.shared.getResultsTableDirectory(predicate: NSPredicate(format: "account == %@ AND serverUrl == %@", metadata.account, serverUrl))?.first,
+                  let hex = tableDirectory.colorFolder,
+                  let color = UIColor(hex: hex) {
             image = self.withTintColor(color, renderingMode: .alwaysOriginal)
         }
         return image

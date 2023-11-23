@@ -60,7 +60,9 @@ class NCColorPicker: UIViewController {
 
         if let metadata = metadata {
             let serverUrl = metadata.serverUrl + "/" + metadata.fileName
-            if let tableDirectory = NCManageDatabase.shared.getTableDirectory(predicate: NSPredicate(format: "account == %@ AND serverUrl == %@", metadata.account, serverUrl)), let hex = tableDirectory.colorFolder, let color = UIColor(hex: hex) {
+            if let tableDirectory = NCManageDatabase.shared.getResultsTableDirectory(predicate: NSPredicate(format: "account == %@ AND serverUrl == %@", metadata.account, serverUrl))?.first,
+               let hex = tableDirectory.colorFolder,
+               let color = UIColor(hex: hex) {
                 selectedColor = color
             }
         }

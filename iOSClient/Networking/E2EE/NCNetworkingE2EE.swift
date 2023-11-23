@@ -42,7 +42,7 @@ class NCNetworkingE2EE: NSObject {
 
         var addCertificate: String?
         var method = "POST"
-        guard let directory = NCManageDatabase.shared.getTableDirectory(predicate: NSPredicate(format: "account == %@ AND serverUrl == %@", account, serverUrl)) else {
+        guard let ocIdServerUrl = NCManageDatabase.shared.getResultsTableDirectory(predicate: NSPredicate(format: "account == %@ AND serverUrl == %@", account, serverUrl))?.first?.ocId else {
             return NKError(errorCode: NCGlobal.shared.errorUnexpectedResponseFromDB, errorDescription: "_e2e_error_")
         }
 
@@ -75,7 +75,7 @@ class NCNetworkingE2EE: NSObject {
         //
         let uploadMetadataError = await uploadMetadata(account: account,
                                                        serverUrl: serverUrl,
-                                                       ocIdServerUrl: directory.ocId,
+                                                       ocIdServerUrl: ocIdServerUrl,
                                                        fileId: fileId,
                                                        userId: userId,
                                                        e2eToken: e2eToken,
@@ -150,7 +150,7 @@ class NCNetworkingE2EE: NSObject {
         var e2eToken: String?
         var e2eCounter = "0"
 
-        guard let directory = NCManageDatabase.shared.getTableDirectory(predicate: NSPredicate(format: "account == %@ AND serverUrl == %@", account, serverUrl)) else {
+        guard let tableDirectory = NCManageDatabase.shared.getResultsTableDirectory(predicate: NSPredicate(format: "account == %@ AND serverUrl == %@", account, serverUrl))?.first else {
             return (nil, nil, NKError(errorCode: NCGlobal.shared.errorUnexpectedResponseFromDB, errorDescription: "_e2e_error_"))
         }
 
@@ -158,17 +158,17 @@ class NCNetworkingE2EE: NSObject {
             e2eToken = tableLock.e2eToken
         }
 
-        if NCGlobal.shared.capabilityE2EEApiVersion == NCGlobal.shared.e2eeVersionV20, var counter = NCManageDatabase.shared.getCounterE2eMetadata(account: account, ocIdServerUrl: directory.ocId) {
+        if NCGlobal.shared.capabilityE2EEApiVersion == NCGlobal.shared.e2eeVersionV20, var counter = NCManageDatabase.shared.getCounterE2eMetadata(account: account, ocIdServerUrl: tableDirectory.ocId) {
             counter += 1
             e2eCounter = "\(counter)"
         }
 
-        let resultsLockE2EEFolder = await NextcloudKit.shared.lockE2EEFolder(fileId: directory.fileId, e2eToken: e2eToken, e2eCounter: e2eCounter, method: "POST")
+        let resultsLockE2EEFolder = await NextcloudKit.shared.lockE2EEFolder(fileId: tableDirectory.fileId, e2eToken: e2eToken, e2eCounter: e2eCounter, method: "POST")
         if resultsLockE2EEFolder.error == .success, let e2eToken = resultsLockE2EEFolder.e2eToken {
-            NCManageDatabase.shared.setE2ETokenLock(account: account, serverUrl: serverUrl, fileId: directory.fileId, e2eToken: e2eToken)
+            NCManageDatabase.shared.setE2ETokenLock(account: account, serverUrl: serverUrl, fileId: tableDirectory.fileId, e2eToken: e2eToken)
         }
 
-        return (directory.fileId, resultsLockE2EEFolder.e2eToken, resultsLockE2EEFolder.error)
+        return (tableDirectory.fileId, resultsLockE2EEFolder.e2eToken, resultsLockE2EEFolder.error)
     }
 
     func unlock(account: String, serverUrl: String) async {

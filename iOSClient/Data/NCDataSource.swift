@@ -29,7 +29,7 @@ class NCDataSource: NSObject {
     var metadatas: [tableMetadata] = []
     var metadatasForSection: [NCMetadataForSection] = []
 
-    var directory: tableDirectory?
+    var etagDirectory: String?
     var groupByField: String = ""
 
     private var sectionsValue: [String] = []
@@ -46,13 +46,13 @@ class NCDataSource: NSObject {
         super.init()
     }
 
-    init(metadatas: [tableMetadata], account: String, directory: tableDirectory? = nil, sort: String? = "none", ascending: Bool? = false, directoryOnTop: Bool? = true, favoriteOnTop: Bool? = true, filterLivePhoto: Bool? = true, groupByField: String = "name", providers: [NKSearchProvider]? = nil, searchResults: [NKSearchResult]? = nil) {
+    init(metadatas: [tableMetadata], account: String, etagDirectory: String? = nil, sort: String? = "none", ascending: Bool? = false, directoryOnTop: Bool? = true, favoriteOnTop: Bool? = true, filterLivePhoto: Bool? = true, groupByField: String = "name", providers: [NKSearchProvider]? = nil, searchResults: [NKSearchResult]? = nil) {
         super.init()
 
         self.metadatas = metadatas.filter({
             !(NCGlobal.shared.includeHiddenFiles.contains($0.fileNameView) || $0.isTransferInForeground)
         })
-        self.directory = directory
+        self.etagDirectory = etagDirectory
         self.sort = sort ?? "none"
         self.ascending = ascending ?? false
         self.directoryOnTop = directoryOnTop ?? true
@@ -72,15 +72,15 @@ class NCDataSource: NSObject {
 
         self.metadatas.removeAll()
         self.metadatasForSection.removeAll()
-        self.directory = nil
+        self.etagDirectory = nil
         self.sectionsValue.removeAll()
         self.providers = nil
         self.searchResults = nil
     }
 
-    func clearDirectory() {
+    func clearEtagDirectory() {
 
-        self.directory = nil
+        self.etagDirectory = nil
     }
 
     func changeGroupByField(_ groupByField: String) {

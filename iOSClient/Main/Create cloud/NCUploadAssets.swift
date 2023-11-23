@@ -172,7 +172,8 @@ struct UploadAssetsView: View {
     }
 
     func getTextServerUrl(_ serverUrl: String) -> String {
-        if let directory = NCManageDatabase.shared.getTableDirectory(predicate: NSPredicate(format: "account == %@ AND serverUrl == %@", uploadAssets.userBaseUrl.account, serverUrl)), let metadata = NCManageDatabase.shared.getMetadataFromOcId(directory.ocId) {
+        if let tableDirectory = NCManageDatabase.shared.getResultsTableDirectory(predicate: NSPredicate(format: "account == %@ AND serverUrl == %@", uploadAssets.userBaseUrl.account, serverUrl))?.first,
+           let metadata = NCManageDatabase.shared.getMetadataFromOcId(tableDirectory.ocId) {
             return (metadata.fileNameView)
         } else {
             return (serverUrl as NSString).lastPathComponent

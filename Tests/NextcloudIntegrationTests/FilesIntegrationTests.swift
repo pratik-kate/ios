@@ -54,8 +54,8 @@ final class FilesIntegrationTests: BaseIntegrationXCTestCase {
                 XCTAssertEqual(metadataFolder?.fileName, folderName)
 
                 // Check Realm directory, should exist
-                let directory = NCManageDatabase.shared.getTableDirectory(predicate: NSPredicate(format: "serverUrl == %@", serverUrlFileName))
-                XCTAssertNotNil(directory)
+                let tableDirectory = NCManageDatabase.shared.getResultsTableDirectory(predicate: NSPredicate(format: "serverUrl == %@", serverUrlFileName))
+                XCTAssertNotNil(tableDirectory)
 
                 Thread.sleep(forTimeInterval: 0.2)
 
@@ -76,8 +76,8 @@ final class FilesIntegrationTests: BaseIntegrationXCTestCase {
                         XCTAssertNil(metadataFolder?.fileName)
 
                         // Check Realm directory, should NOT exist
-                        let directory = NCManageDatabase.shared.getTableDirectory(predicate: NSPredicate(format: "serverUrl == %@", serverUrlFileName))
-                        XCTAssertNil(directory)
+                        let tableDirectory = NCManageDatabase.shared.getResultsTableDirectory(predicate: NSPredicate(format: "serverUrl == %@", serverUrlFileName))
+                        XCTAssertNil(tableDirectory)
                     }
                 }
             }

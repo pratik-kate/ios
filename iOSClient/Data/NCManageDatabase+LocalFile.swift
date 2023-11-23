@@ -68,7 +68,7 @@ extension NCManageDatabase {
         do {
             let realm = try Realm()
             try realm.write {
-                let addObject = getTableLocalFile(predicate: NSPredicate(format: "ocId == %@", metadata.ocId)) ?? tableLocalFile()
+                let addObject = getResultsTableLocalFile(predicate: NSPredicate(format: "ocId == %@", metadata.ocId))?.first ?? tableLocalFile()
                 addObject.account = metadata.account
                 addObject.etag = metadata.etag
                 addObject.exifDate = NSDate()
@@ -178,20 +178,6 @@ extension NCManageDatabase {
         }
 
         return []
-    }
-
-    func getTableLocalFile(predicate: NSPredicate) -> tableLocalFile? {
-
-        do {
-            let realm = try Realm()
-            realm.refresh()
-            guard let result = realm.objects(tableLocalFile.self).filter(predicate).first else { return nil }
-            return tableLocalFile.init(value: result)
-        } catch let error as NSError {
-            NextcloudKit.shared.nkCommonInstance.writeLog("Could not access database: \(error)")
-        }
-
-        return nil
     }
 
     func getResultsTableLocalFile(predicate: NSPredicate) -> Results<tableLocalFile>? {

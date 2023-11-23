@@ -59,12 +59,12 @@ class fileProviderUtility: NSObject {
     func getParentItemIdentifier(metadata: tableMetadata) -> NSFileProviderItemIdentifier? {
 
         let homeServerUrl = utilityFileSystem.getHomeServer(urlBase: metadata.urlBase, userId: metadata.userId)
-        if let directory = NCManageDatabase.shared.getTableDirectory(predicate: NSPredicate(format: "account == %@ AND serverUrl == %@", metadata.account, metadata.serverUrl)) {
-            if directory.serverUrl == homeServerUrl {
+        if let tableDirectory = NCManageDatabase.shared.getResultsTableDirectory(predicate: NSPredicate(format: "account == %@ AND serverUrl == %@", metadata.account, metadata.serverUrl))?.first {
+            if tableDirectory.serverUrl == homeServerUrl {
                 return NSFileProviderItemIdentifier(NSFileProviderItemIdentifier.rootContainer.rawValue)
             } else {
                 // get the metadata.ocId of parent Directory
-                if let metadata = NCManageDatabase.shared.getMetadataFromOcId(directory.ocId) {
+                if let metadata = NCManageDatabase.shared.getMetadataFromOcId(tableDirectory.ocId) {
                     let identifier = getItemIdentifier(metadata: metadata)
                     return identifier
                 }
@@ -88,9 +88,7 @@ class fileProviderUtility: NSObject {
             predicate = NSPredicate(format: "ocId == %@", metadata.ocId)
         }
 
-        guard let directory = NCManageDatabase.shared.getTableDirectory(predicate: predicate) else { return nil }
-
-        return directory
+        return NCManageDatabase.shared.getResultsTableDirectory(predicate: predicate)?.first
     }
 
     // MARK: -

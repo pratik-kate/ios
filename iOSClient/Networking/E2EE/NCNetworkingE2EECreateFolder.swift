@@ -46,7 +46,7 @@ class NCNetworkingE2EECreateFolder: NSObject {
         if fileNameFolder.isEmpty {
             return NKError(errorCode: NCGlobal.shared.errorUnexpectedResponseFromDB, errorDescription: NSLocalizedString("_e2e_error_", comment: ""))
         }
-        guard let directory = NCManageDatabase.shared.getTableDirectory(predicate: NSPredicate(format: "account == %@ AND serverUrl == %@", account, serverUrl)) else {
+        guard let ocIdServerUrl = NCManageDatabase.shared.getResultsTableDirectory(predicate: NSPredicate(format: "account == %@ AND serverUrl == %@", account, serverUrl))?.first?.ocId else {
             return NKError(errorCode: NCGlobal.shared.errorUnexpectedResponseFromDB, errorDescription: NSLocalizedString("_e2e_error_", comment: ""))
         }
 
@@ -76,7 +76,7 @@ class NCNetworkingE2EECreateFolder: NSObject {
                 return NKError(errorCode: NCGlobal.shared.errorE2EEEncodedKey, errorDescription: NSLocalizedString("_e2e_error_", comment: ""))
             }
 
-            let object = tableE2eEncryption.init(account: account, ocIdServerUrl: directory.ocId, fileNameIdentifier: fileNameIdentifier)
+            let object = tableE2eEncryption.init(account: account, ocIdServerUrl: ocIdServerUrl, fileNameIdentifier: fileNameIdentifier)
             object.blob = "folders"
             if let results = NCManageDatabase.shared.getE2eEncryption(predicate: NSPredicate(format: "account == %@ AND serverUrl == %@", account, serverUrl)) {
                 object.metadataKey = results.metadataKey
@@ -100,7 +100,7 @@ class NCNetworkingE2EECreateFolder: NSObject {
             //
             let uploadMetadataError = await networkingE2EE.uploadMetadata(account: account,
                                                                                    serverUrl: serverUrl,
-                                                                                   ocIdServerUrl: directory.ocId,
+                                                                                   ocIdServerUrl: ocIdServerUrl,
                                                                                    fileId: fileId,
                                                                                    userId: userId,
                                                                                    e2eToken: e2eToken,

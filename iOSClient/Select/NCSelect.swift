@@ -552,8 +552,7 @@ extension NCSelect {
             loadFolder()
         }
 
-        let directory = NCManageDatabase.shared.getTableDirectory(predicate: NSPredicate(format: "account == %@ AND serverUrl == %@", activeAccount.account, serverUrl))
-        richWorkspaceText = directory?.richWorkspace
+        richWorkspaceText = NCManageDatabase.shared.getResultsTableDirectory(predicate: NSPredicate(format: "account == %@ AND serverUrl == %@", activeAccount.account, serverUrl))?.first?.richWorkspace
 
         DispatchQueue.main.async {
             self.collectionView.reloadData()
