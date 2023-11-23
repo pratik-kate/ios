@@ -195,7 +195,7 @@ class FileProviderEnumerator: NSObject, NSFileProviderEnumerator {
 
     func readFileOrFolder(serverUrl: String, completionHandler: @escaping (_ metadatas: [tableMetadata]?) -> Void) {
 
-        var directoryEtag = NCManageDatabase.shared.getTableDirectory(predicate: NSPredicate(format: "account == %@ AND serverUrl == %@", fileProviderData.shared.account, serverUrl))?.etag
+        let directoryEtag = NCManageDatabase.shared.getTableDirectory(predicate: NSPredicate(format: "account == %@ AND serverUrl == %@", fileProviderData.shared.account, serverUrl))?.etag
 
         NextcloudKit.shared.readFileOrFolder(serverUrlFileName: serverUrl, depth: "0", showHiddenFiles: NCKeychain().showHiddenFiles) { account, files, _, error in
 

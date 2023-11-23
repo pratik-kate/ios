@@ -116,7 +116,7 @@ class NCViewerProviderContextMenu: UIViewController {
                         maxDownload = NCGlobal.shared.maxAutoDownload
                     }
 
-                    if metadata.size <= maxDownload, 
+                    if metadata.size <= maxDownload,
                        let appDelegate = (UIApplication.shared.delegate as? AppDelegate),
                        appDelegate.downloadQueue.operations.filter({ ($0 as? NCOperationDownload)?.metadata.ocId == metadata.ocId }).isEmpty {
                         appDelegate.downloadQueue.addOperation(NCOperationDownload(metadata: metadata, selector: ""))
