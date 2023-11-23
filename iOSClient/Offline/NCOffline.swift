@@ -55,9 +55,9 @@ class NCOffline: NCCollectionViewCommon {
         var metadatas: [tableMetadata] = []
 
         if self.serverUrl.isEmpty {
-            if let directories = NCManageDatabase.shared.getTablesDirectory(predicate: NSPredicate(format: "account == %@ AND offline == true", self.appDelegate.account), sorted: "serverUrl", ascending: true) {
-                for directory: tableDirectory in directories {
-                    ocIds.append(directory.ocId)
+            if let resultsTableDirectory = NCManageDatabase.shared.getTablesDirectory(predicate: NSPredicate(format: "account == %@ AND offline == true", self.appDelegate.account), sorted: "serverUrl", ascending: true) {
+                for tableDirectory: tableDirectory in resultsTableDirectory {
+                    ocIds.append(tableDirectory.ocId)
                 }
             }
             let files = NCManageDatabase.shared.getTableLocalFiles(predicate: NSPredicate(format: "account == %@ AND offline == true", self.appDelegate.account), sorted: "fileName", ascending: true)
