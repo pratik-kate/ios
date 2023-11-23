@@ -137,10 +137,10 @@ extension NCSelectableNavigationView where Self: UIViewController {
 
             guard !isAnyOffline else { continue }
             if metadata.directory,
-               let directory = NCManageDatabase.shared.getResultsTableDirectory(predicate: NSPredicate(format: "account == %@ AND serverUrl == %@", appDelegate.account, metadata.serverUrl + "/" + metadata.fileName))?.first {
-                isAnyOffline = directory.offline
-            } else if let localFile = NCManageDatabase.shared.getResultsTableLocalFile(predicate: NSPredicate(format: "ocId == %@", metadata.ocId))?.first {
-                isAnyOffline = localFile.offline
+               let offline = NCManageDatabase.shared.getTableDirectory(predicate: NSPredicate(format: "account == %@ AND serverUrl == %@", appDelegate.account, metadata.serverUrl + "/" + metadata.fileName))?.offline {
+                isAnyOffline = offline
+            } else if let offline = NCManageDatabase.shared.getTableLocalFile(predicate: NSPredicate(format: "ocId == %@", metadata.ocId))?.offline {
+                isAnyOffline = offline
             } // else: file is not offline, continue
         }
 

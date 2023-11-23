@@ -34,7 +34,7 @@ class NCEndToEndMetadata: NSObject {
 
     func encodeMetadata(account: String, serverUrl: String, userId: String, addUserId: String? = nil, addCertificate: String? = nil, removeUserId: String? = nil) -> (metadata: String?, signature: String?, counter: Int, error: NKError) {
 
-        guard let ocIdServerUrl = NCManageDatabase.shared.getResultsTableDirectory(predicate: NSPredicate(format: "account == %@ AND serverUrl == %@", account, serverUrl))?.first?.ocId else {
+        guard let ocIdServerUrl = NCManageDatabase.shared.getTableDirectory(predicate: NSPredicate(format: "account == %@ AND serverUrl == %@", account, serverUrl))?.ocId else {
             return (nil, nil, 0, NKError(errorCode: NCGlobal.shared.errorUnexpectedResponseFromDB, errorDescription: "_e2e_error_"))
         }
 
@@ -54,7 +54,7 @@ class NCEndToEndMetadata: NSObject {
     func decodeMetadata(_ metadata: String, signature: String?, serverUrl: String, account: String, urlBase: String, userId: String) -> NKError {
 
         guard let data = metadata.data(using: .utf8),
-              let ocIdServerUrl = NCManageDatabase.shared.getResultsTableDirectory(predicate: NSPredicate(format: "account == %@ AND serverUrl == %@", account, serverUrl))?.first?.ocId else {
+              let ocIdServerUrl = NCManageDatabase.shared.getTableDirectory(predicate: NSPredicate(format: "account == %@ AND serverUrl == %@", account, serverUrl))?.ocId else {
             return (NKError(errorCode: NCGlobal.shared.errorE2EEJSon, errorDescription: "_e2e_error_"))
         }
 

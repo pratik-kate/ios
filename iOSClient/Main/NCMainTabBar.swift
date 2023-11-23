@@ -188,7 +188,7 @@ class NCMainTabBar: UITabBar {
         centerButton.layer.shadowOpacity = 0.5
         centerButton.action(for: .touchUpInside) { _ in
 
-            if let tableDirectory = NCManageDatabase.shared.getResultsTableDirectory(predicate: NSPredicate(format: "account == %@ AND serverUrl == %@", self.appDelegate.account, self.appDelegate.activeServerUrl))?.first,
+            if let tableDirectory = NCManageDatabase.shared.getTableDirectory(predicate: NSPredicate(format: "account == %@ AND serverUrl == %@", self.appDelegate.account, self.appDelegate.activeServerUrl)),
                !tableDirectory.permissions.contains("CK") {
                 let error = NKError(errorCode: NCGlobal.shared.errorInternalError, errorDescription: "_no_permission_add_file_")
                 NCContentPresenter().showWarning(error: error)

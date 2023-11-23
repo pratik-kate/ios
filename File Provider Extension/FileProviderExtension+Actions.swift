@@ -169,7 +169,7 @@ extension FileProviderExtension {
             return
         }
 
-        guard let encrypted = NCManageDatabase.shared.getResultsTableDirectory(predicate: NSPredicate(format: "account == %@ AND serverUrl == %@", metadata.account, metadata.serverUrl))?.first?.e2eEncrypted else {
+        guard let encrypted = NCManageDatabase.shared.getTableDirectory(predicate: NSPredicate(format: "account == %@ AND serverUrl == %@", metadata.account, metadata.serverUrl))?.e2eEncrypted else {
             completionHandler(nil, NSFileProviderError(.noSuchItem))
             return
         }

@@ -58,7 +58,7 @@ class NCNetworkingE2EEUpload: NSObject {
         metadata.session = NextcloudKit.shared.nkCommonInstance.sessionIdentifierUpload
         metadata.sessionError = ""
         guard let result = NCManageDatabase.shared.addMetadata(metadata),
-              let ocIdServerUrl = NCManageDatabase.shared.getResultsTableDirectory(predicate: NSPredicate(format: "account == %@ AND serverUrl == %@", metadata.account, metadata.serverUrl))?.first?.ocId else {
+              let ocIdServerUrl = NCManageDatabase.shared.getTableDirectory(predicate: NSPredicate(format: "account == %@ AND serverUrl == %@", metadata.account, metadata.serverUrl))?.ocId else {
             return NKError(errorCode: NCGlobal.shared.errorUnexpectedResponseFromDB, errorDescription: NSLocalizedString("_e2e_error_", comment: ""))
         }
         metadata = result

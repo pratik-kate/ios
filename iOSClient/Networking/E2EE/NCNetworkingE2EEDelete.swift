@@ -28,7 +28,7 @@ class NCNetworkingE2EEDelete: NSObject {
 
     func delete(metadata: tableMetadata) async -> NKError {
 
-        guard let ocIdServerUrl = NCManageDatabase.shared.getResultsTableDirectory(predicate: NSPredicate(format: "account == %@ AND serverUrl == %@", metadata.account, metadata.serverUrl))?.first?.ocId else {
+        guard let ocIdServerUrl = NCManageDatabase.shared.getTableDirectory(predicate: NSPredicate(format: "account == %@ AND serverUrl == %@", metadata.account, metadata.serverUrl))?.ocId else {
             return NKError(errorCode: NCGlobal.shared.errorUnexpectedResponseFromDB, errorDescription: "_e2e_error_")
         }
 

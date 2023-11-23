@@ -35,7 +35,7 @@ extension AppDelegate {
         let appDelegate = (UIApplication.shared.delegate as? AppDelegate)!
         let directEditingCreators = NCManageDatabase.shared.getDirectEditingCreators(account: appDelegate.account)
         let isDirectoryE2EE = NCUtilityFileSystem().isDirectoryE2EE(serverUrl: appDelegate.activeServerUrl, userBase: appDelegate)
-        let tableDirectory = NCManageDatabase.shared.getResultsTableDirectory(predicate: NSPredicate(format: "account == %@ AND serverUrl == %@", appDelegate.account, appDelegate.activeServerUrl))?.first
+        let tableDirectory = NCManageDatabase.shared.getTableDirectory(predicate: NSPredicate(format: "account == %@ AND serverUrl == %@", appDelegate.account, appDelegate.activeServerUrl))
 
         actions.append(
             NCMenuAction(

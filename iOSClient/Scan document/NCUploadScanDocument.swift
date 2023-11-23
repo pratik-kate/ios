@@ -364,7 +364,7 @@ struct UploadScanDocumentView: View {
 
     func getTextServerUrl(_ serverUrl: String) -> String {
 
-        if let ocIdServerUrl = NCManageDatabase.shared.getResultsTableDirectory(predicate: NSPredicate(format: "account == %@ AND serverUrl == %@", uploadScanDocument.userBaseUrl.account, serverUrl))?.first?.ocId,
+        if let ocIdServerUrl = NCManageDatabase.shared.getTableDirectory(predicate: NSPredicate(format: "account == %@ AND serverUrl == %@", uploadScanDocument.userBaseUrl.account, serverUrl))?.ocId,
            let metadata = NCManageDatabase.shared.getMetadataFromOcId(ocIdServerUrl) {
             return (metadata.fileNameView)
         } else {

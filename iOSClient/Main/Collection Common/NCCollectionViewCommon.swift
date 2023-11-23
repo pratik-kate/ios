@@ -1380,10 +1380,8 @@ extension NCCollectionViewCommon: UICollectionViewDataSource {
 
         } else {
 
-            let tableLocalFile = NCManageDatabase.shared.getResultsTableLocalFile(predicate: NSPredicate(format: "ocId == %@", metadata.ocId))?.first
-
             // image local
-            if let tableLocalFile, tableLocalFile.offline {
+            if NCManageDatabase.shared.getTableLocalFile(predicate: NSPredicate(format: "ocId == %@", metadata.ocId))?.offline == true {
                 a11yValues.append(NSLocalizedString("_offline_", comment: ""))
                 cell.fileLocalImage?.image = NCImageCache.images.offlineFlag
             } else if utilityFileSystem.fileProviderStorageExists(metadata) {

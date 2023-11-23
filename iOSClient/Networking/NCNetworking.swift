@@ -1056,7 +1056,7 @@ class NCNetworking: NSObject, NKCommonDelegate {
 
     func synchronizeMetadata(_ metadata: tableMetadata) -> Bool {
 
-        let localFile = NCManageDatabase.shared.getResultsTableLocalFile(predicate: NSPredicate(format: "ocId == %@", metadata.ocId))?.first
+        let localFile = NCManageDatabase.shared.getTableLocalFile(predicate: NSPredicate(format: "ocId == %@", metadata.ocId))
         if localFile?.etag != metadata.etag || utilityFileSystem.fileProviderStorageSize(metadata.ocId, fileNameView: metadata.fileNameView) == 0 {
             return true
         }
@@ -1593,7 +1593,7 @@ class NCNetworking: NSObject, NKCommonDelegate {
 
                     let serverUrl = self.utilityFileSystem.stringAppendServerUrl(metadata.serverUrl, addFileName: metadata.fileName)
                     let serverUrlTo = self.utilityFileSystem.stringAppendServerUrl(metadata.serverUrl, addFileName: fileNameNew)
-                    if let tableDirectory = NCManageDatabase.shared.getResultsTableDirectory(predicate: NSPredicate(format: "account == %@ AND serverUrl == %@", metadata.account, metadata.serverUrl))?.first {
+                    if let tableDirectory = NCManageDatabase.shared.getTableDirectory(predicate: NSPredicate(format: "account == %@ AND serverUrl == %@", metadata.account, metadata.serverUrl)) {
                         NCManageDatabase.shared.setDirectory(serverUrl: serverUrl, serverUrlTo: serverUrlTo, etag: "", ocId: nil, fileId: nil, encrypted: tableDirectory.e2eEncrypted, richWorkspace: nil, account: metadata.account)
                     }
 

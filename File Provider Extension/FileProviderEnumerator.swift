@@ -40,7 +40,7 @@ class FileProviderEnumerator: NSObject, NSFileProviderEnumerator {
             serverUrl = fileProviderData.shared.homeServerUrl
         } else {
             if let metadata = fpUtility.getTableMetadataFromItemIdentifier(enumeratedItemIdentifier),
-               let serverUrl = NCManageDatabase.shared.getResultsTableDirectory(predicate: NSPredicate(format: "account == %@ AND serverUrl == %@", metadata.account, metadata.serverUrl))?.first?.serverUrl {
+               let serverUrl = NCManageDatabase.shared.getTableDirectory(predicate: NSPredicate(format: "account == %@ AND serverUrl == %@", metadata.account, metadata.serverUrl))?.serverUrl {
                 self.serverUrl = serverUrl + "/" + metadata.fileName
             }
         }
@@ -195,7 +195,7 @@ class FileProviderEnumerator: NSObject, NSFileProviderEnumerator {
 
     func readFileOrFolder(serverUrl: String, completionHandler: @escaping (_ metadatas: [tableMetadata]?) -> Void) {
 
-        var directoryEtag = NCManageDatabase.shared.getResultsTableDirectory(predicate: NSPredicate(format: "account == %@ AND serverUrl == %@", fileProviderData.shared.account, serverUrl))?.first?.etag
+        var directoryEtag = NCManageDatabase.shared.getTableDirectory(predicate: NSPredicate(format: "account == %@ AND serverUrl == %@", fileProviderData.shared.account, serverUrl))?.etag
 
         NextcloudKit.shared.readFileOrFolder(serverUrlFileName: serverUrl, depth: "0", showHiddenFiles: NCKeychain().showHiddenFiles) { account, files, _, error in
 

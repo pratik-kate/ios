@@ -129,7 +129,7 @@ class FileProviderItem: NSObject, NSFileProviderItem {
     }
 
     var isUploaded: Bool {
-        let localFile = NCManageDatabase.shared.getResultsTableLocalFile(predicate: NSPredicate(format: "ocId == %@", metadata.ocId))?.first
+        let localFile = NCManageDatabase.shared.getTableLocalFile(predicate: NSPredicate(format: "ocId == %@", metadata.ocId))
         if localFile != nil {
             return true
         } else {
