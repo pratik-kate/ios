@@ -61,8 +61,7 @@ extension NCManageDatabase {
         do {
             let realm = try Realm()
             realm.refresh()
-            guard let result = realm.objects(tableAvatar.self).filter("fileName == %@", fileName).first else { return nil }
-            return tableAvatar.init(value: result)
+            return realm.objects(tableAvatar.self).filter("fileName == %@", fileName).first
         } catch let error as NSError {
             NextcloudKit.shared.nkCommonInstance.writeLog("Could not access database: \(error)")
         }
