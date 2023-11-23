@@ -201,7 +201,7 @@ extension NCManageDatabase {
     }
 
     @discardableResult
-    func setDirectory(serverUrl: String, richWorkspace: String?, account: String) -> tableDirectory? {
+    func setDirectoryRichWorkspace(serverUrl: String, richWorkspace: String?, account: String) -> tableDirectory? {
 
         var result: tableDirectory?
 

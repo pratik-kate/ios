@@ -22,11 +22,12 @@
 //
 
 import UIKit
-import Realm
 import NextcloudKit
 import EasyTipView
 import JGProgressHUD
 import Queuer
+import RealmSwift
+import Realm
 
 class NCCollectionViewCommon: UIViewController, UIGestureRecognizerDelegate, UISearchResultsUpdating, UISearchControllerDelegate, UISearchBarDelegate, NCListCellDelegate, NCGridCellDelegate, NCSectionHeaderMenuDelegate, NCSectionFooterDelegate, UIAdaptivePresentationControllerDelegate, NCEmptyDataSetDelegate, UIContextMenuInteractionDelegate, NCAccountRequestDelegate, NCSelectableNavigationView {
 
@@ -999,14 +1000,11 @@ class NCCollectionViewCommon: UIViewController, UIGestureRecognizerDelegate, UIS
                 return completion(nil, nil, nil, nil, error)
             }
 
-            let tableDirectory = NCManageDatabase.shared.setDirectory(serverUrl: self.serverUrl, richWorkspace: metadataFolder.richWorkspace, account: account)
+            @ThreadSafe var tableDirectory = NCManageDatabase.shared.setDirectoryRichWorkspace(serverUrl: self.serverUrl, richWorkspace: metadataFolder.richWorkspace, account: account)
 
             if isForced || tableDirectory?.etag != metadataFolder.etag || metadataFolder.e2eEncrypted {
                 NCNetworking.shared.readFolder(serverUrl: self.serverUrl, account: self.appDelegate.account) { _, metadataFolder, metadatas, metadatasUpdate, _, metadatasDelete, error in
-                    guard error == .success else {
-                        completion(tableDirectory, nil, nil, nil, error)
-                        return
-                    }
+                    guard error == .success else { return completion(tableDirectory, nil, nil, nil, error) }
                     self.metadataFolder = metadataFolder
                     // E2EE
                     if let metadataFolder = metadataFolder,

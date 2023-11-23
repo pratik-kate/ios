@@ -60,7 +60,6 @@ extension NCManageDatabase {
 
         do {
             let realm = try Realm()
-            realm.refresh()
             return realm.objects(tableAvatar.self).filter("fileName == %@", fileName).first
         } catch let error as NSError {
             NextcloudKit.shared.nkCommonInstance.writeLog("Could not access database: \(error)")
@@ -116,7 +115,6 @@ extension NCManageDatabase {
 
         do {
             let realm = try Realm()
-            realm.refresh()
             let result = realm.objects(tableAvatar.self).filter("fileName == %@", fileName).first
             if result == nil {
                 utilityFileSystem.removeFile(atPath: fileNameLocalPath)

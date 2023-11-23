@@ -948,7 +948,7 @@ class NCNetworking: NSObject, NKCommonDelegate {
 
                 // Update directory
                 NCManageDatabase.shared.addDirectory(encrypted: metadataFolder.e2eEncrypted, favorite: metadataFolder.favorite, ocId: metadataFolder.ocId, fileId: metadataFolder.fileId, etag: metadataFolder.etag, permissions: metadataFolder.permissions, serverUrl: serverUrl, account: metadataFolder.account)
-                NCManageDatabase.shared.setDirectory(serverUrl: serverUrl, richWorkspace: metadataFolder.richWorkspace, account: metadataFolder.account)
+                NCManageDatabase.shared.setDirectoryRichWorkspace(serverUrl: serverUrl, richWorkspace: metadataFolder.richWorkspace, account: metadataFolder.account)
 
                 // Update sub directories NO Update richWorkspace
                 for metadata in metadatasFolder {
