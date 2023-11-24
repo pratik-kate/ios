@@ -67,27 +67,23 @@ extension NCManageDatabase {
         }
     }
 
-    func getTags(predicate: NSPredicate) -> [tableTag] {
+    func getTags(predicate: NSPredicate) -> Results<tableTag>? {
 
         do {
             let realm = try Realm()
-            realm.refresh()
-            let results = realm.objects(tableTag.self).filter(predicate)
-            return Array(results.map { tableTag.init(value: $0) })
+            return realm.objects(tableTag.self).filter(predicate)
         } catch let error as NSError {
             NextcloudKit.shared.nkCommonInstance.writeLog("Could not write to database: \(error)")
         }
 
-        return []
+        return nil
     }
 
     func getTag(predicate: NSPredicate) -> tableTag? {
 
         do {
             let realm = try Realm()
-            realm.refresh()
-            guard let result = realm.objects(tableTag.self).filter(predicate).first else { return nil }
-            return tableTag.init(value: result)
+            return realm.objects(tableTag.self).filter(predicate).first
         } catch let error as NSError {
             NextcloudKit.shared.nkCommonInstance.writeLog("Could not write to database: \(error)")
         }
