@@ -21,6 +21,7 @@
 
 import Foundation
 import NextcloudKit
+import RealmSwift
 
 class NCNetworkingE2EE: NSObject {
 
@@ -150,9 +151,10 @@ class NCNetworkingE2EE: NSObject {
         var e2eToken: String?
         var e2eCounter = "0"
 
-        guard let tableDirectory = NCManageDatabase.shared.getTableDirectory(predicate: NSPredicate(format: "account == %@ AND serverUrl == %@", account, serverUrl)) else {
+        guard let result = NCManageDatabase.shared.getTableDirectory(predicate: NSPredicate(format: "account == %@ AND serverUrl == %@", account, serverUrl)) else {
             return (nil, nil, NKError(errorCode: NCGlobal.shared.errorUnexpectedResponseFromDB, errorDescription: "_e2e_error_"))
         }
+        let tableDirectory = tableDirectory(value: result)
 
         if let tableLock = NCManageDatabase.shared.getE2ETokenLock(account: account, serverUrl: serverUrl) {
             e2eToken = tableLock.e2eToken

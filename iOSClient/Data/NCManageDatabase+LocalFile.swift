@@ -68,15 +68,19 @@ extension NCManageDatabase {
         do {
             let realm = try Realm()
             try realm.write {
-                let addObject = getTableLocalFile(predicate: NSPredicate(format: "ocId == %@", metadata.ocId)) ?? tableLocalFile()
-                addObject.account = metadata.account
-                addObject.etag = metadata.etag
-                addObject.exifDate = NSDate()
-                addObject.exifLatitude = "-1"
-                addObject.exifLongitude = "-1"
-                addObject.ocId = metadata.ocId
-                addObject.fileName = metadata.fileName
-                realm.add(addObject, update: .all)
+                var table = tableLocalFile()
+                if let result = getTableLocalFile(predicate: NSPredicate(format: "ocId == %@", metadata.ocId)) {
+                    table = result
+                } else {
+                    table.ocId = metadata.ocId
+                    table.exifDate = NSDate()
+                    table.exifLatitude = "-1"
+                    table.exifLongitude = "-1"
+                }
+                table.account = metadata.account
+                table.etag = metadata.etag
+                table.fileName = metadata.fileName
+                realm.add(table, update: .all)
             }
         } catch let error {
             NextcloudKit.shared.nkCommonInstance.writeLog("Could not write to database: \(error)")
