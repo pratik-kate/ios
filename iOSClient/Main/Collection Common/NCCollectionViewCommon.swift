@@ -992,7 +992,7 @@ class NCCollectionViewCommon: UIViewController, UIGestureRecognizerDelegate, UIS
         }
     }
 
-    @objc func networkReadFolder(isForced: Bool, completion: @escaping(_ tableDirectory: tableDirectory?, _ metadatas: [tableMetadata]?, _ metadatasUpdate: [tableMetadata]?, _ metadatasDelete: [tableMetadata]?, _ error: NKError) -> Void) {
+    @objc func networkReadFolder(isForced: Bool, completion: @escaping(_ richWorkspace: String?, _ metadatas: [tableMetadata]?, _ metadatasUpdate: [tableMetadata]?, _ metadatasDelete: [tableMetadata]?, _ error: NKError) -> Void) {
 
         NCNetworking.shared.readFile(serverUrlFileName: serverUrl) { account, metadataFolder, error in
 
@@ -1000,11 +1000,12 @@ class NCCollectionViewCommon: UIViewController, UIGestureRecognizerDelegate, UIS
                 return completion(nil, nil, nil, nil, error)
             }
 
-            @ThreadSafe var tableDirectory = NCManageDatabase.shared.setDirectoryRichWorkspace(serverUrl: self.serverUrl, richWorkspace: metadataFolder.richWorkspace, account: account)
+            let richWorkspace = metadataFolder.richWorkspace
+            let tableDirectory = NCManageDatabase.shared.setDirectoryRichWorkspace(serverUrl: self.serverUrl, richWorkspace: richWorkspace, account: account)
 
             if isForced || tableDirectory?.etag != metadataFolder.etag || metadataFolder.e2eEncrypted {
                 NCNetworking.shared.readFolder(serverUrl: self.serverUrl, account: self.appDelegate.account) { _, metadataFolder, metadatas, metadatasUpdate, _, metadatasDelete, error in
-                    guard error == .success else { return completion(tableDirectory, nil, nil, nil, error) }
+                    guard error == .success else { return completion(richWorkspace, nil, nil, nil, error) }
                     self.metadataFolder = metadataFolder
                     // E2EE
                     if let metadataFolder = metadataFolder,
@@ -1032,14 +1033,14 @@ class NCCollectionViewCommon: UIViewController, UIGestureRecognizerDelegate, UIS
                             } else {
                                 NCContentPresenter().showError(error: NKError(errorCode: NCGlobal.shared.errorE2EEKeyDecodeMetadata, errorDescription: "_e2e_error_"))
                             }
-                            completion(tableDirectory, metadatas, metadatasUpdate, metadatasDelete, error)
+                            completion(richWorkspace, metadatas, metadatasUpdate, metadatasDelete, error)
                         }
                     } else {
-                        completion(tableDirectory, metadatas, metadatasUpdate, metadatasDelete, error)
+                        completion(richWorkspace, metadatas, metadatasUpdate, metadatasDelete, error)
                     }
                 }
             } else {
-                completion(tableDirectory, nil, nil, nil, NKError())
+                completion(richWorkspace, nil, nil, nil, NKError())
             }
         }
     }
