@@ -45,24 +45,6 @@ class tableLocalFile: Object {
 }
 extension NCManageDatabase {
 
-    // MARK: -
-    // MARK: Table LocalFile - return RESULT
-
-    func getTableLocalFile(ocId: String) -> tableLocalFile? {
-
-        do {
-            let realm = try Realm()
-            realm.refresh()
-            return realm.objects(tableLocalFile.self).filter("ocId == %@", ocId).first
-        } catch let error as NSError {
-            NextcloudKit.shared.nkCommonInstance.writeLog("Could not access database: \(error)")
-        }
-        return nil
-    }
-
-    // MARK: -
-    // MARK: Table LocalFile
-
     func addLocalFile(metadata: tableMetadata) {
 
         do {
@@ -139,7 +121,7 @@ extension NCManageDatabase {
         }
     }
 
-    @objc func setLocalFile(ocId: String, exifDate: NSDate?, exifLatitude: String, exifLongitude: String, exifLensModel: String?) {
+    func setLocalFile(ocId: String, exifDate: NSDate?, exifLatitude: String, exifLongitude: String, exifLensModel: String?) {
 
         do {
             let realm = try Realm()
@@ -171,60 +153,6 @@ extension NCManageDatabase {
         }
     }
 
-    func getTableLocalFile(account: String) -> [tableLocalFile] {
-
-        do {
-            let realm = try Realm()
-            realm.refresh()
-            let results = realm.objects(tableLocalFile.self).filter("account == %@", account)
-            return Array(results.map { tableLocalFile.init(value: $0) })
-        } catch let error as NSError {
-            NextcloudKit.shared.nkCommonInstance.writeLog("Could not access database: \(error)")
-        }
-
-        return []
-    }
-
-    func getTableLocalFile(predicate: NSPredicate) -> tableLocalFile? {
-
-        do {
-            let realm = try Realm()
-            realm.refresh()
-            return realm.objects(tableLocalFile.self).filter(predicate).first
-        } catch let error as NSError {
-            NextcloudKit.shared.nkCommonInstance.writeLog("Could not access database: \(error)")
-        }
-
-        return nil
-    }
-
-    func getTableLocalFiles(predicate: NSPredicate, sorted: String, ascending: Bool) -> [tableLocalFile] {
-
-        do {
-            let realm = try Realm()
-            realm.refresh()
-            let results = realm.objects(tableLocalFile.self).filter(predicate).sorted(byKeyPath: sorted, ascending: ascending)
-            return Array(results.map { tableLocalFile.init(value: $0) })
-        } catch let error as NSError {
-            NextcloudKit.shared.nkCommonInstance.writeLog("Could not access database: \(error)")
-        }
-
-        return []
-    }
-
-    func getResultsTableLocalFile(predicate: NSPredicate, sorted: String, ascending: Bool) -> Results<tableLocalFile>? {
-
-        do {
-            let realm = try Realm()
-            realm.refresh()
-            return realm.objects(tableLocalFile.self).filter(predicate).sorted(byKeyPath: sorted, ascending: ascending)
-        } catch let error as NSError {
-            NextcloudKit.shared.nkCommonInstance.writeLog("Could not access database: \(error)")
-        }
-
-        return nil
-    }
-
     func setLastOpeningDate(metadata: tableMetadata) {
 
         do {
@@ -247,5 +175,64 @@ extension NCManageDatabase {
         } catch let error {
             NextcloudKit.shared.nkCommonInstance.writeLog("Could not write to database: \(error)")
         }
+    }
+
+    func getTableLocalFile(ocId: String) -> tableLocalFile? {
+
+        do {
+            let realm = try Realm()
+            return realm.objects(tableLocalFile.self).filter("ocId == %@", ocId).first
+        } catch let error as NSError {
+            NextcloudKit.shared.nkCommonInstance.writeLog("Could not access database: \(error)")
+        }
+        return nil
+    }
+
+    func getTableLocalFile(account: String) -> Results<tableLocalFile>? {
+
+        do {
+            let realm = try Realm()
+            return realm.objects(tableLocalFile.self).filter("account == %@", account)
+        } catch let error as NSError {
+            NextcloudKit.shared.nkCommonInstance.writeLog("Could not access database: \(error)")
+        }
+
+        return nil
+    }
+
+    func getTableLocalFile(predicate: NSPredicate) -> tableLocalFile? {
+
+        do {
+            let realm = try Realm()
+            return realm.objects(tableLocalFile.self).filter(predicate).first
+        } catch let error as NSError {
+            NextcloudKit.shared.nkCommonInstance.writeLog("Could not access database: \(error)")
+        }
+
+        return nil
+    }
+
+    func getTableLocalFiles(predicate: NSPredicate, sorted: String, ascending: Bool) -> Results<tableLocalFile>? {
+
+        do {
+            let realm = try Realm()
+            return realm.objects(tableLocalFile.self).filter(predicate).sorted(byKeyPath: sorted, ascending: ascending)
+        } catch let error as NSError {
+            NextcloudKit.shared.nkCommonInstance.writeLog("Could not access database: \(error)")
+        }
+
+        return nil
+    }
+
+    func getResultsTableLocalFile(predicate: NSPredicate, sorted: String, ascending: Bool) -> Results<tableLocalFile>? {
+
+        do {
+            let realm = try Realm()
+            return realm.objects(tableLocalFile.self).filter(predicate).sorted(byKeyPath: sorted, ascending: ascending)
+        } catch let error as NSError {
+            NextcloudKit.shared.nkCommonInstance.writeLog("Could not access database: \(error)")
+        }
+
+        return nil
     }
 }
