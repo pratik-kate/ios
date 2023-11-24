@@ -75,11 +75,11 @@ class NCCapabilitiesViewOO: ObservableObject {
             capabililies.append(Capability(text: "Deleted files", image: image, resize: false, available: NCGlobal.shared.capabilityFilesUndelete))
         }
 
-        if let editors = NCManageDatabase.shared.getDirectEditingEditors(account: activeAccount.account) {
-            for editor in editors {
-                if editor.editor == NCGlobal.shared.editorText {
+        if let results = NCManageDatabase.shared.getDirectEditingEditors(account: activeAccount.account) {
+            for result in results {
+                if result.editor == NCGlobal.shared.editorText {
                     textEditor = true
-                } else if editor.editor == NCGlobal.shared.editorOnlyoffice {
+                } else if result.editor == NCGlobal.shared.editorOnlyoffice {
                     onlyofficeEditors = true
                 }
             }

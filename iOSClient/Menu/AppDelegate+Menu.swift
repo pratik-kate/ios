@@ -58,8 +58,8 @@ extension AppDelegate {
             )
         )
 
-        if NextcloudKit.shared.isNetworkReachable() && directEditingCreators != nil && directEditingCreators!.contains(where: { $0.editor == NCGlobal.shared.editorText}) && !isDirectoryE2EE {
-            let directEditingCreator = directEditingCreators!.first(where: { $0.editor == NCGlobal.shared.editorText})!
+        if NextcloudKit.shared.isNetworkReachable(), let directEditingCreators, directEditingCreators.contains(where: { $0.editor == NCGlobal.shared.editorText}) && !isDirectoryE2EE {
+            let directEditingCreator = directEditingCreators.first(where: { $0.editor == NCGlobal.shared.editorText})!
             actions.append(
                 NCMenuAction(title: NSLocalizedString("_create_nextcloudtext_document_", comment: ""), icon: UIImage(named: "file_txt")!.image(color: UIColor.systemGray, size: 50), action: { _ in
                     guard let navigationController = UIStoryboard(name: "NCCreateFormUploadDocuments", bundle: nil).instantiateInitialViewController() else {

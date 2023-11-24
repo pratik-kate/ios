@@ -102,17 +102,11 @@ extension NCManageDatabase {
         }
     }
 
-    func getDirectEditingCreators(account: String) -> [tableDirectEditingCreators]? {
+    func getDirectEditingCreators(account: String) -> Results<tableDirectEditingCreators>? {
 
         do {
             let realm = try Realm()
-            realm.refresh()
-            let results = realm.objects(tableDirectEditingCreators.self).filter("account == %@", account)
-            if results.isEmpty {
-                return nil
-            } else {
-                return Array(results.map { tableDirectEditingCreators.init(value: $0) })
-            }
+            return realm.objects(tableDirectEditingCreators.self).filter("account == %@", account)
         } catch let error as NSError {
             NextcloudKit.shared.nkCommonInstance.writeLog("Could not write to database: \(error)")
         }
@@ -120,17 +114,11 @@ extension NCManageDatabase {
         return nil
     }
 
-    func getDirectEditingCreators(predicate: NSPredicate) -> [tableDirectEditingCreators]? {
+    func getDirectEditingCreators(predicate: NSPredicate) -> Results<tableDirectEditingCreators>? {
 
         do {
             let realm = try Realm()
-            realm.refresh()
-            let results = realm.objects(tableDirectEditingCreators.self).filter(predicate)
-            if results.isEmpty {
-                return nil
-            } else {
-                return Array(results.map { tableDirectEditingCreators.init(value: $0) })
-            }
+            return realm.objects(tableDirectEditingCreators.self).filter(predicate)
         } catch let error as NSError {
             NextcloudKit.shared.nkCommonInstance.writeLog("Could not write to database: \(error)")
         }
@@ -138,17 +126,11 @@ extension NCManageDatabase {
         return nil
     }
 
-    func getDirectEditingEditors(account: String) -> [tableDirectEditingEditors]? {
+    func getDirectEditingEditors(account: String) -> Results<tableDirectEditingEditors>? {
 
         do {
             let realm = try Realm()
-            realm.refresh()
-            let results = realm.objects(tableDirectEditingEditors.self).filter("account == %@", account)
-            if results.isEmpty {
-                return nil
-            } else {
-                return Array(results.map { tableDirectEditingEditors.init(value: $0) })
-            }
+            return realm.objects(tableDirectEditingEditors.self).filter("account == %@", account)
         } catch let error as NSError {
             NextcloudKit.shared.nkCommonInstance.writeLog("Could not write to database: \(error)")
         }
