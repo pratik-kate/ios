@@ -103,9 +103,7 @@ extension NCTrash {
 
     func toggleMenuMore(with objectId: String, image: UIImage?, isGridCell: Bool) {
 
-        guard let tableTrash = NCManageDatabase.shared.getTrashItem(fileId: objectId, account: appDelegate.account) else {
-            return
-        }
+        guard let tableTrash = NCManageDatabase.shared.getTrashItem(fileId: objectId, account: appDelegate.account) else { return }
 
         guard isGridCell else {
             let alert = UIAlertController(title: NSLocalizedString("_want_delete_", comment: ""), message: tableTrash.trashbinFileName, preferredStyle: .alert)

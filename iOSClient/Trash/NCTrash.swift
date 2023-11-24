@@ -238,11 +238,9 @@ class NCTrash: UIViewController, NCSelectableNavigationView, NCTrashListCellDele
 
         layoutForView = NCManageDatabase.shared.getLayoutForView(account: appDelegate.account, key: NCGlobal.shared.layoutViewTrash, serverUrl: "")
         datasource.removeAll()
-        guard let trashPath = self.getTrashPath(), let tashItems = NCManageDatabase.shared.getTrash(filePath: trashPath, sort: layoutForView?.sort, ascending: layoutForView?.ascending, account: appDelegate.account) else {
-            return
-        }
-
-        datasource = tashItems
+        guard let trashPath = self.getTrashPath(),
+              let tashItems = NCManageDatabase.shared.getTrash(filePath: trashPath, sort: layoutForView?.sort, ascending: layoutForView?.ascending, account: appDelegate.account) else { return }
+        datasource = Array(tashItems.map { tableTrash.init(value: $0) })
         collectionView.reloadData()
         guard let blinkFileId = blinkFileId else { return }
         for itemIx in 0..<self.datasource.count where self.datasource[itemIx].fileId.contains(blinkFileId) {

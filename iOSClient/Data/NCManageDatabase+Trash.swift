@@ -118,16 +118,14 @@ extension NCManageDatabase {
         }
     }
 
-    func getTrash(filePath: String, sort: String?, ascending: Bool?, account: String) -> [tableTrash]? {
+    func getTrash(filePath: String, sort: String?, ascending: Bool?, account: String) -> Results<tableTrash>? {
 
         let sort = sort ?? "date"
         let ascending = ascending ?? false
 
         do {
             let realm = try Realm()
-            realm.refresh()
-            let results = realm.objects(tableTrash.self).filter("account == %@ AND filePath == %@", account, filePath).sorted(byKeyPath: sort, ascending: ascending)
-            return Array(results.map { tableTrash.init(value: $0) })
+            return realm.objects(tableTrash.self).filter("account == %@ AND filePath == %@", account, filePath).sorted(byKeyPath: sort, ascending: ascending)
         } catch let error as NSError {
             NextcloudKit.shared.nkCommonInstance.writeLog("Could not write to database: \(error)")
         }
@@ -139,9 +137,7 @@ extension NCManageDatabase {
 
         do {
             let realm = try Realm()
-            realm.refresh()
-            guard let result = realm.objects(tableTrash.self).filter("account == %@ AND fileId == %@", account, fileId).first else { return nil }
-            return tableTrash.init(value: result)
+            return realm.objects(tableTrash.self).filter("account == %@ AND fileId == %@", account, fileId).first
         } catch let error as NSError {
             NextcloudKit.shared.nkCommonInstance.writeLog("Could not write to database: \(error)")
         }
