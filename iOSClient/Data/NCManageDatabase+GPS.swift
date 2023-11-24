@@ -38,7 +38,6 @@ extension NCManageDatabase {
 
         do {
             let realm = try Realm()
-            realm.refresh()
             guard realm.objects(tableGPS.self).filter("latitude == %@ AND longitude == %@", latitude, longitude).first == nil else { return }
             try realm.write {
                 let addObject = tableGPS()
@@ -55,7 +54,6 @@ extension NCManageDatabase {
     @objc func getLocationFromLatAndLong(latitude: Double, longitude: Double) -> String? {
         do {
             let realm = try Realm()
-            realm.refresh()
             let result = realm.objects(tableGPS.self).filter("latitude == %@ AND longitude == %@", latitude, longitude).first
             return result?.location
         } catch let error as NSError {
