@@ -185,8 +185,7 @@ extension NCManageDatabase {
 
         do {
             let realm = try Realm()
-            guard let result = realm.objects(tableE2eEncryption.self).filter(predicate).sorted(byKeyPath: "metadataKeyIndex", ascending: false).first else { return nil }
-            return tableE2eEncryption.init(value: result)
+            return realm.objects(tableE2eEncryption.self).filter(predicate).sorted(byKeyPath: "metadataKeyIndex", ascending: false).first
         } catch let error as NSError {
             NextcloudKit.shared.nkCommonInstance.writeLog("Could not access database: \(error)")
         }
@@ -194,18 +193,16 @@ extension NCManageDatabase {
         return nil
     }
 
-    func getE2eEncryptions(predicate: NSPredicate) -> [tableE2eEncryption] {
+    func getE2eEncryptions(predicate: NSPredicate) -> Results<tableE2eEncryption>? {
 
         do {
             let realm = try Realm()
-            let results: Results<tableE2eEncryption>
-            results = realm.objects(tableE2eEncryption.self).filter(predicate)
-            return Array(results.map { tableE2eEncryption.init(value: $0) })
+            return realm.objects(tableE2eEncryption.self).filter(predicate)
         } catch let error as NSError {
             NextcloudKit.shared.nkCommonInstance.writeLog("Could not access database: \(error)")
         }
 
-        return []
+        return nil
     }
 
     func renameFileE2eEncryption(account: String, serverUrl: String, fileNameIdentifier: String, newFileName: String, newFileNamePath: String) {
@@ -229,8 +226,7 @@ extension NCManageDatabase {
 
         do {
             let realm = try Realm()
-            guard let result = realm.objects(tableE2eEncryptionLock.self).filter("account == %@ AND serverUrl == %@", account, serverUrl).first else { return nil }
-            return tableE2eEncryptionLock.init(value: result)
+            return realm.objects(tableE2eEncryptionLock.self).filter("account == %@ AND serverUrl == %@", account, serverUrl).first
         } catch let error as NSError {
             NextcloudKit.shared.nkCommonInstance.writeLog("Could not access database: \(error)")
         }
@@ -238,21 +234,16 @@ extension NCManageDatabase {
         return nil
     }
 
-    func getE2EAllTokenLock(account: String) -> [tableE2eEncryptionLock] {
+    func getE2EAllTokenLock(account: String) -> Results<tableE2eEncryptionLock>? {
 
         do {
             let realm = try Realm()
-            let results = realm.objects(tableE2eEncryptionLock.self).filter("account == %@", account)
-            if results.isEmpty {
-                return []
-            } else {
-                return Array(results.map { tableE2eEncryptionLock.init(value: $0) })
-            }
+            return realm.objects(tableE2eEncryptionLock.self).filter("account == %@", account)
         } catch let error as NSError {
             NextcloudKit.shared.nkCommonInstance.writeLog("Could not access database: \(error)")
         }
 
-        return []
+        return nil
     }
 
     func setE2ETokenLock(account: String, serverUrl: String, fileId: String, e2eToken: String) {
@@ -293,8 +284,7 @@ extension NCManageDatabase {
 
         do {
             let realm = try Realm()
-            guard let result = realm.objects(tableE2eMetadata12.self).filter("account == %@ AND serverUrl == %@", account, serverUrl).first else { return nil }
-            return tableE2eMetadata12.init(value: result)
+            return realm.objects(tableE2eMetadata12.self).filter("account == %@ AND serverUrl == %@", account, serverUrl).first
         } catch let error as NSError {
             NextcloudKit.shared.nkCommonInstance.writeLog("Could not access database: \(error)")
         }

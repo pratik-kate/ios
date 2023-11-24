@@ -185,7 +185,9 @@ extension NCEndToEndMetadata {
 
         // CIPERTEXT
         //
-        let e2eEncryptions = NCManageDatabase.shared.getE2eEncryptions(predicate: NSPredicate(format: "account == %@ AND serverUrl == %@", account, serverUrl))
+        guard let e2eEncryptions = NCManageDatabase.shared.getE2eEncryptions(predicate: NSPredicate(format: "account == %@ AND serverUrl == %@", account, serverUrl)) else {
+            return (nil, nil, 0, NKError(errorCode: NCGlobal.shared.errorUnexpectedResponseFromDB, errorDescription: "_e2e_error_"))
+        }
 
         for e2eEncryption in e2eEncryptions {
             if e2eEncryption.blob == "files" {

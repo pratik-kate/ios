@@ -98,7 +98,9 @@ extension NCEndToEndMetadata {
         let privateKey = NCKeychain().getEndToEndPrivateKey(account: account)
         var fileNameIdentifiers: [String] = []
 
-        let e2eEncryptions = NCManageDatabase.shared.getE2eEncryptions(predicate: NSPredicate(format: "account == %@ AND serverUrl == %@", account, serverUrl))
+        guard let e2eEncryptions = NCManageDatabase.shared.getE2eEncryptions(predicate: NSPredicate(format: "account == %@ AND serverUrl == %@", account, serverUrl)) else {
+            return (nil, nil, 0, NKError(errorCode: NCGlobal.shared.errorUnexpectedResponseFromDB, errorDescription: "_e2e_error_"))
+        }
 
         //
         // metadata
