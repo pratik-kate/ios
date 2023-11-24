@@ -73,17 +73,11 @@ extension NCManageDatabase {
         }
     }
 
-    func getAllExternalSites(account: String) -> [tableExternalSites]? {
+    func getAllExternalSites(account: String) -> Results<tableExternalSites>? {
 
         do {
             let realm = try Realm()
-            realm.refresh()
-            let results = realm.objects(tableExternalSites.self).filter("account == %@", account).sorted(byKeyPath: "idExternalSite", ascending: true)
-            if results.isEmpty {
-                return nil
-            } else {
-                return Array(results.map { tableExternalSites.init(value: $0) })
-            }
+            return realm.objects(tableExternalSites.self).filter("account == %@", account).sorted(byKeyPath: "idExternalSite", ascending: true)
         } catch let error as NSError {
             NextcloudKit.shared.nkCommonInstance.writeLog("Could not write to database: \(error)")
         }
