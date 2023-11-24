@@ -65,19 +65,17 @@ extension NCManageDatabase {
         return (nil, nil)
     }
 
-    func getDashboardWidgetApplications(account: String) -> [tableDashboardWidget] {
+    func getDashboardWidgetApplications(account: String) -> Results<tableDashboardWidget>? {
 
         do {
             let realm = try Realm()
-            realm.refresh()
             let sortProperties = [SortDescriptor(keyPath: "order", ascending: true), SortDescriptor(keyPath: "title", ascending: true)]
-            let results = realm.objects(tableDashboardWidget.self).filter("account == %@", account).sorted(by: sortProperties)
-            return Array(results.map { tableDashboardWidget.init(value: $0) })
+            return realm.objects(tableDashboardWidget.self).filter("account == %@", account).sorted(by: sortProperties)
         } catch let error as NSError {
             NextcloudKit.shared.nkCommonInstance.writeLog("Could not access database: \(error)")
         }
 
-        return []
+        return nil
     }
 
     func addDashboardWidget(account: String, dashboardWidgets: [NCCDashboardWidget]) {
